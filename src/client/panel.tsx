@@ -11,6 +11,7 @@ import { DEFAULT_SETTINGS, SceneController } from './scene'
 import type { SectionAxis, ViewerSettings } from './scene'
 import { loadModelFile } from './load'
 import { buildPromptBlock } from './send'
+import { useViewerEnabled } from './store'
 import css from './styles.module.css'
 
 export interface SendResult {
@@ -170,11 +171,12 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
     : { min: doc.bounds.min[axisIndex(settings.sectionAxis)], max: doc.bounds.max[axisIndex(settings.sectionAxis)] }
 
   const sessionOpen = hasSession()
+  const viewerEnabled = useViewerEnabled()
 
   return (
     <section
       ref={panelRef}
-      className={css.panel}
+      className={`${css.panel} ${viewerEnabled ? '' : css.hiddenPanel}`}
       data-dsh-3d-viewer
       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
       onDragLeave={() => setDragging(false)}

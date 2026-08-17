@@ -10,6 +10,7 @@
 import type { AgentContext, ClientContext, IConversation } from './dsh'
 import { ViewerPanel } from './panel'
 import type { PanelFace } from './panel'
+import { ViewerSettingsCard } from './settings-card'
 import { en, NS, zh } from './locales'
 
 export const inject = ['slots', 'sessions', 'locale']
@@ -71,4 +72,13 @@ export function apply(ctx: ClientContext): void {
     locale: NS,
     inject: () => face,
   }, ViewerPanel))
+
+  // 「设置 → 插件」里的配置卡片：查看器开关
+  ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
+    name: 'settings.plugins.tab',
+    id: 'dsh-3d-model-viewer',
+    order: 20,
+    label: () => ctx.locale.bind(NS)('title'),
+    locale: NS,
+  }, ViewerSettingsCard))
 }

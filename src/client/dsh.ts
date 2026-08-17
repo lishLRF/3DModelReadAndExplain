@@ -39,6 +39,7 @@ export interface ISlots {
 
 export interface ILocale {
   register(ns: string, dicts: Record<string, Record<string, string>>): () => void
+  bind(ns: string): (key: string) => string
 }
 
 export interface ClientContext {

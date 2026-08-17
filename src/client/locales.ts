@@ -37,6 +37,9 @@ export interface ViewerKey {
   'sending': string
   'sent': string
   'error': string
+  'settingsDesc': string
+  'enabled': string
+  'disabled': string
 }
 
 export const en: Record<keyof ViewerKey, string> = {
@@ -71,6 +74,9 @@ export const en: Record<keyof ViewerKey, string> = {
   sending: 'Sending…',
   sent: 'Sent',
   error: 'Error',
+  settingsDesc: 'View OBJ/STL/STEP models in a floating panel and translate them to LLM-readable JSON.',
+  enabled: 'Enabled',
+  disabled: 'Disabled',
 }
 
 export const zh: Record<keyof ViewerKey, string> = {
@@ -105,4 +111,7 @@ export const zh: Record<keyof ViewerKey, string> = {
   sending: '发送中…',
   sent: '已发送',
   error: '错误',
+  settingsDesc: '在右侧悬浮面板中查看 OBJ/STL/STEP 模型，并转译为 LLM 可读的 JSON。',
+  enabled: '已开启',
+  disabled: '已关闭',
 }
