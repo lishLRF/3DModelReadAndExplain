@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { ChangeEvent, DragEvent } from 'react'
+import type { ChangeEvent, DragEvent, PointerEvent as ReactPointerEvent } from 'react'
 import type { ModelDocument } from '../schema'
 import { DEFAULT_SETTINGS, SceneController } from './scene'
 import type { SectionAxis, ViewerSettings } from './scene'
@@ -42,6 +42,8 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
   const canvasRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const sceneRef = useRef<SceneController | null>(null)
+  const panelRef = useRef<HTMLElement>(null)
+  const dragRef = useRef<{ startX: number; startY: number; left: number; top: number } | null>(null)
   const [doc, setDoc] = useState<ModelDocument | null>(null)
   const [minimized, setMinimized] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -97,6 +99,29 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
     if (file !== undefined) void onLoad(file)
   }, [onLoad])
 
+  // 拖动头部移动面板（点按钮不触发拖动）
+  const onHeaderPointerDown = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    const panel = panelRef.current
+    if (panel === null) return
+    if ((event.target as HTMLElement).closest('button') !== null) return
+    const rect = panel.getBoundingClientRect()
+    dragRef.current = { startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top }
+    const move = (ev: PointerEvent): void => {
+      const s = dragRef.current
+      if (s === null) return
+      panel.style.right = 'auto'
+      panel.style.left = `${s.left + ev.clientX - s.startX}px`
+      panel.style.top = `${s.top + ev.clientY - s.startY}px`
+    }
+    const up = (): void => {
+      dragRef.current = null
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+  }, [])
+
   // 把人工输入的描述合并进文档（供发送/下载/复制使用）
   const currentDoc = useMemo<ModelDocument | null>(() => {
     if (doc === null) return null
@@ -148,13 +173,14 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
 
   return (
     <section
+      ref={panelRef}
       className={css.panel}
       data-dsh-3d-viewer
       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
       onDragLeave={() => setDragging(false)}
       onDrop={onDrop}
     >
-      <header className={css.header}>
+      <header className={css.header} onPointerDown={onHeaderPointerDown}>
         <span className={css.title}>{t('title')}</span>
         <div className={css.headerActions}>
           <button

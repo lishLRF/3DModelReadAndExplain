@@ -16,18 +16,29 @@
   border: 1px solid var(--dsw-alias-border-l1, rgba(255, 255, 255, 0.08));
   border-radius: 12px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
   font-size: 13px;
   z-index: 40;
 }
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
   border-bottom: 1px solid var(--dsw-alias-border-l1, rgba(255, 255, 255, 0.08));
+  background: var(--dsw-alias-bg-overlay, #1e1f22);
+  cursor: grab;
   user-select: none;
+}
+
+.header:active {
+  cursor: grabbing;
 }
 
 .title {
@@ -61,9 +72,6 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
 }
 
 .content.collapsed {
