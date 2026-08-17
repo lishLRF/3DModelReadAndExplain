@@ -29,8 +29,7 @@ export interface OcctResult {
 
 /** Minimal structural view of the occt-import-js module surface we use. */
 export interface OcctImportJs {
-  ReadStepFile(content: string, params: unknown): OcctResult
-  ReadBrepFile(content: ArrayBuffer, params: unknown): OcctResult
+  ReadStepFile(content: Uint8Array, params: unknown): OcctResult
 }
 
 /** Convert an occt-import-js result into the intermediate RawMesh form. */

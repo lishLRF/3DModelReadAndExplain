@@ -139,7 +139,7 @@ function generateBoxStep() {
     { n: [0, -1, 0], loop: [1, 2, 6, 5] }, // front
     { n: [0, 1, 0], loop: [4, 8, 7, 3] },  // back
     { n: [-1, 0, 0], loop: [1, 5, 8, 4] }, // left
-    { n: [1, 0, 0], loop: [2, 6, 7, 3] },  // right
+    { n: [1, 0, 0], loop: [2, 3, 7, 6] },  // right
   ]
   // 12 条边（canonical 方向：小点 → 大点）
   const edges = [
@@ -175,7 +175,7 @@ function generateBoxStep() {
     const vec = next()
     emit(`#${vec}=VECTOR('',#${dir},1.);`)
     const line = next()
-    emit(`#${line}=LINE('',#${vp1},#${vec});`)
+    emit(`#${line}=LINE('',#${pointId[a]},#${vec});`)
     const ec = next()
     emit(`#${ec}=EDGE_CURVE('',#${vp1},#${vp2},#${line},.T.);`)
     edgeCurveId[`${a}-${b}`] = ec

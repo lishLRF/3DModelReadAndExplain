@@ -10,17 +10,29 @@ import { stepResultToMeshes, type OcctImportJs, type OcctResult } from '../parse
 // Statically imported so the browser bundle inlines the occt-import-js JS
 // (a dynamic import would code-split, and the DSH client loader serves a
 // single `client.js` per plugin). The WASM binary still loads lazily on the
-// first STEP file via `init()`.
+// first STEP file.
 import * as occtModule from 'occt-import-js'
 
 /**
  * URL of the occt-import-js WASM binary. The bundled `client.js` cannot
  * co-locate the `.wasm`, so the default points at a pinned CDN build. Set this
  * to your own host (or serve the `.wasm` beside the bundle) for air-gapped
- * deployments. See README § "STEP (.stp) support".
+ * deployments. See README § "STEP (.stp/.step) 支持".
  */
 export const STEP_WASM_URL =
-  'https://cdn.jsdelivr.net/npm/occt-import-js@0.2.0/dist/occt-import-js.wasm'
+  'https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.wasm'
+
+type OcctFactory = (options?: { locateFile?: (path: string) => string }) => Promise<OcctImportJs>
+
+/** Resolve the occt-import-js factory (the module's default/CJS export). */
+function getFactory(): OcctFactory {
+  const mod = occtModule as unknown as Record<string, unknown> & { default?: unknown }
+  const candidate = mod.default ?? mod
+  if (typeof candidate !== 'function') {
+    throw new Error('occt-import-js: cannot resolve the factory function')
+  }
+  return candidate as OcctFactory
+}
 
 export class UnsupportedModelFormatError extends Error {
   constructor(filename: string) {
@@ -51,17 +63,7 @@ let occtReady: Promise<OcctImportJs> | null = null
 /** Lazily initialize the occt-import-js WASM module (memoized). */
 function ensureOcct(): Promise<OcctImportJs> {
   if (occtReady === null) {
-    occtReady = (async () => {
-      const mod = occtModule as unknown as OcctImportJs & {
-        init?: (options?: unknown) => Promise<OcctImportJs>
-      }
-      if (typeof mod.init !== 'function') return mod
-      try {
-        return await mod.init({ locateFile: () => STEP_WASM_URL })
-      } catch {
-        return await mod.init()
-      }
-    })()
+    occtReady = getFactory()({ locateFile: () => STEP_WASM_URL })
   }
   return occtReady
 }
@@ -77,7 +79,7 @@ export async function translateStepFile(file: File, name: string): Promise<Model
     )
   }
 
-  const content = await file.text()
+  const content = new Uint8Array(await file.arrayBuffer())
   let result: OcctResult
   try {
     result = instance.ReadStepFile(content, null)
