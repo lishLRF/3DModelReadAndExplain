@@ -73,12 +73,11 @@ export function apply(ctx: ClientContext): void {
     inject: () => face,
   }, ViewerPanel))
 
-  // 「设置 → 插件」里的配置卡片：查看器开关
-  ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
-    name: 'settings.plugins.tab',
+  // 「设置 → 插件 → 配置」页里的插件卡片：查看器开关（与 bash/web-search 等平级，位于插件列表下）
+  ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
+    name: 'settings.plugin.item',
     id: 'dsh-3d-model-viewer',
-    order: 20,
-    label: () => ctx.locale.bind(NS)('title'),
+    order: 100,
     locale: NS,
   }, ViewerSettingsCard))
 }
