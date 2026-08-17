@@ -145,6 +145,42 @@
   font-variant-numeric: tabular-nums;
 }
 
+.descBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.descLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-secondary, #9aa3b2);
+}
+
+.descInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 56px;
+  resize: vertical;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--dsw-alias-label-primary, #eceef2);
+  background: var(--dsw-alias-bg-layer-2, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--dsw-alias-border-l1, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  outline: none;
+}
+
+.descInput:focus {
+  border-color: var(--dsw-alias-brand-primary, #4f7cff);
+}
+
+.descInput::placeholder {
+  color: var(--dsw-alias-label-secondary, #9aa3b2);
+  opacity: 0.7;
+}
+
 details {
   border: 1px solid var(--dsw-alias-border-l1, rgba(255, 255, 255, 0.08));
   border-radius: 8px;

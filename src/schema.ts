@@ -59,6 +59,8 @@ export interface ModelDocument {
   meta: {
     sourceFormat: SourceFormat
     name?: string
+    /** Human-provided description of the model (optional). */
+    description?: string
     /** Best-effort unit name (e.g. `mm`, `m`, `unknown`). */
     units: string
     generator: string

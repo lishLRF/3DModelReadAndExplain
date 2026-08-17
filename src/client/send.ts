@@ -31,6 +31,10 @@ export function buildPromptBlock(doc: ModelDocument, options: SendBlockOptions =
   }
 
   lines.push(`[3D model: ${name} (${format}${units})]`)
+  if (meta.description !== undefined && meta.description.trim() !== '') {
+    lines.push(`Human description: ${meta.description.trim()}`)
+    lines.push('')
+  }
   lines.push('The following is a standardized, LLM-readable description of this 3D model.')
   lines.push(`Semantic analysis: ${doc.analysis.naturalDescription}.`)
   lines.push(

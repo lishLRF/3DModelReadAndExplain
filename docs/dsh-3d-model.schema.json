@@ -15,6 +15,7 @@
       "properties": {
         "sourceFormat": { "enum": ["obj", "stl", "step", "unknown"] },
         "name": { "type": "string" },
+        "description": { "type": "string" },
         "units": { "type": "string" },
         "generator": { "type": "string" },
         "generatedAt": { "type": "string", "format": "date-time" }

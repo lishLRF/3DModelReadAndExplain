@@ -30,6 +30,7 @@
 ## 字段说明
 
 - `meta` —— 来源格式、名称、单位（OBJ/STL 无单位信息，默认 `unknown`；STEP 常带真实单位）、
+  可选的人工描述 `description`（用户在界面输入的模型说明，随 JSON 一起提供给 LLM）、
   生成器与生成时间。
 - `bounds` —— 所有部件的轴对齐包围盒与包围球：`min/max/size/center/radius`。
 - `summary` —— 供模型快速判断规模的计数：部件数、顶点数、三角面数、材质数。

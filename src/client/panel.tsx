@@ -4,7 +4,7 @@
  * it is an additive frame-wide surface — it never replaces shipped UI.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, DragEvent } from 'react'
 import type { ModelDocument } from '../schema'
 import { DEFAULT_SETTINGS, SceneController } from './scene'
@@ -48,6 +48,7 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
   const [status, setStatus] = useState<string | null>(null)
   const [settings, setSettings] = useState<ViewerSettings>(DEFAULT_SETTINGS)
   const [dragging, setDragging] = useState(false)
+  const [description, setDescription] = useState('')
 
   useEffect(() => {
     if (canvasRef.current === null) return
@@ -70,6 +71,7 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
   const onLoad = useCallback(async (file: File) => {
     setError(null)
     setStatus(null)
+    setDescription('')
     try {
       const model = await loadModelFile(file)
       setDoc(model)
@@ -95,40 +97,48 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
     if (file !== undefined) void onLoad(file)
   }, [onLoad])
 
+  // 把人工输入的描述合并进文档（供发送/下载/复制使用）
+  const currentDoc = useMemo<ModelDocument | null>(() => {
+    if (doc === null) return null
+    const trimmed = description.trim()
+    if (trimmed === '') return doc
+    return { ...doc, meta: { ...doc.meta, description: trimmed } }
+  }, [doc, description])
+
   const doAppend = useCallback(() => {
-    if (doc === null) return
-    const block = buildPromptBlock(doc)
+    if (currentDoc === null) return
+    const block = buildPromptBlock(currentDoc)
     const result = appendToDraft(block)
     setStatus(result.ok ? t('sent') : result.error ?? t('error'))
-  }, [doc, appendToDraft, t])
+  }, [currentDoc, appendToDraft, t])
 
   const doSendNow = useCallback(async () => {
-    if (doc === null) return
+    if (currentDoc === null) return
     setStatus(t('sending'))
-    const result = await sendNow(buildPromptBlock(doc))
+    const result = await sendNow(buildPromptBlock(currentDoc))
     setStatus(result.ok ? t('sent') : result.error ?? t('error'))
-  }, [doc, sendNow, t])
+  }, [currentDoc, sendNow, t])
 
   const doDownload = useCallback(() => {
-    if (doc === null) return
-    const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' })
+    if (currentDoc === null) return
+    const blob = new Blob([JSON.stringify(currentDoc, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${doc.meta.name ?? 'model'}.dsh3d.json`
+    a.download = `${currentDoc.meta.name ?? 'model'}.dsh3d.json`
     a.click()
     URL.revokeObjectURL(url)
-  }, [doc])
+  }, [currentDoc])
 
   const doCopy = useCallback(async () => {
-    if (doc === null) return
+    if (currentDoc === null) return
     try {
-      await navigator.clipboard.writeText(JSON.stringify(doc, null, 2))
+      await navigator.clipboard.writeText(JSON.stringify(currentDoc, null, 2))
       setStatus(t('copied'))
     } catch {
       setStatus(t('error'))
     }
-  }, [doc, t])
+  }, [currentDoc, t])
 
   const sectionRange = doc === null
     ? { min: -1, max: 1 }
@@ -193,6 +203,17 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
                   {t('stats')}: {doc.summary.partCount} parts · {doc.summary.vertexCount} verts · {doc.summary.triangleCount} tris
                 </span>
               </div>
+
+              <label className={css.descBlock}>
+                <span className={css.descLabel}>{t('description')}</span>
+                <textarea
+                  className={css.descInput}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder={t('descriptionHint')}
+                  rows={3}
+                />
+              </label>
 
               <details open>
                 <summary>{t('material')}</summary>

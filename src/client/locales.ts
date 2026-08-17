@@ -12,6 +12,8 @@ export interface ViewerKey {
   'empty': string
   'emptyHint': string
   'stats': string
+  'description': string
+  'descriptionHint': string
   'material': string
   'color': string
   'metalness': string
@@ -44,6 +46,8 @@ export const en: Record<keyof ViewerKey, string> = {
   empty: 'No model loaded',
   emptyHint: 'Load a 3D model to view, inspect and send it to the conversation.',
   stats: 'Stats',
+  description: 'Model description',
+  descriptionHint: 'Describe this model (what it is, features, materials, holes…) — sent to the AI.',
   material: 'Material',
   color: 'Color',
   metalness: 'Metalness',
@@ -76,6 +80,8 @@ export const zh: Record<keyof ViewerKey, string> = {
   empty: '未加载模型',
   emptyHint: '加载一个三维模型，即可查看、调节并发送到对话。',
   stats: '统计',
+  description: '模型描述',
+  descriptionHint: '描述这个模型（是什么、特征、材质、孔位等）——会随 JSON 一起发给 AI。',
   material: '材质',
   color: '颜色',
   metalness: '金属度',
