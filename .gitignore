@@ -1,0 +1,29 @@
+# ---- Node ------------------------------------------------------------------
+node_modules/
+lib/
+*.tsbuildinfo
+
+# ---- build / tooling ------------------------------------------------------
+.turbo/
+dist/
+coverage/
+.vite/
+*.log
+
+# ---- editor / OS ----------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ---- local env ------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ---- package lock: this is a standalone plugin, not a monorepo -------------
+# pnpm-lock.yaml is committed by default for reproducible git installs; uncomment
+# only if you deliberately vend your own toolchain lock and keep it in sync.
+# pnpm-lock.yaml

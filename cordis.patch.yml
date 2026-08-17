@@ -1,0 +1,18 @@
+# dsh-3d-model-viewer bundle patch.
+#
+# One row composes BOTH halves of this package:
+#
+#   • Host half  — the `read_3d_model` model tool (registers against the
+#     host-plane `tools` service) and the exported OBJ/STL/STEP → standardized
+#     JSON translator library.
+#
+#   • Client half — the browser viewer. The client-modules node half scans
+#     the Loader's entries for packages declaring `dsh.client` (this package
+#     does) and serves `exports["./client"]` at `/plugins/<id>/client.js`.
+#     No patch row is needed for the client bundle itself.
+#
+# Users may override this row (e.g. `disabled: true`) in their profile's own
+# `cordis.patch.yml` without touching this package.
+- insert:
+    - id: dsh-3d-model-viewer
+      name: 'dsh-3d-model-viewer'

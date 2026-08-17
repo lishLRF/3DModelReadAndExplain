@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/dsh-3d-model-v1.schema.json",
+  "title": "Standardized LLM-readable 3D model document",
+  "description": "The single JSON shape every supported 3D source format (OBJ/STL/STEP) is translated into.",
+  "type": "object",
+  "required": ["schema", "meta", "bounds", "summary", "parts", "analysis"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "dsh-3d-model/v1" },
+    "meta": {
+      "type": "object",
+      "required": ["sourceFormat", "units", "generator", "generatedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "sourceFormat": { "enum": ["obj", "stl", "step", "unknown"] },
+        "name": { "type": "string" },
+        "units": { "type": "string" },
+        "generator": { "type": "string" },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "required": ["min", "max", "size", "center", "radius"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "$ref": "#/$defs/vec3" },
+        "max": { "$ref": "#/$defs/vec3" },
+        "size": { "$ref": "#/$defs/vec3" },
+        "center": { "$ref": "#/$defs/vec3" },
+        "radius": { "type": "number" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["partCount", "vertexCount", "triangleCount", "materialCount"],
+      "additionalProperties": false,
+      "properties": {
+        "partCount": { "type": "integer", "minimum": 0 },
+        "vertexCount": { "type": "integer", "minimum": 0 },
+        "triangleCount": { "type": "integer", "minimum": 0 },
+        "materialCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/material" }
+    },
+    "parts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/part" }
+    },
+    "analysis": { "$ref": "#/$defs/analysis" }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "material": {
+      "type": "object",
+      "required": ["id", "color"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "metalness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "roughness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "part": {
+      "type": "object",
+      "required": ["id", "vertices", "indices"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "material": { "type": "string" },
+        "vertices": { "type": "array", "items": { "type": "number" } },
+        "normals": { "type": "array", "items": { "type": "number" } },
+        "indices": { "type": "array", "items": { "type": "integer", "minimum": 0 } }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "required": ["partCount", "totalSurfaceArea", "totalVolume", "watertight", "parts", "naturalDescription"],
+      "additionalProperties": false,
+      "properties": {
+        "partCount": { "type": "integer", "minimum": 0 },
+        "totalSurfaceArea": { "type": "number", "minimum": 0 },
+        "totalVolume": { "type": "number" },
+        "watertight": { "type": "boolean" },
+        "parts": { "type": "array", "items": { "$ref": "#/$defs/partAnalysis" } },
+        "naturalDescription": { "type": "string" }
+      }
+    },
+    "partAnalysis": {
+      "type": "object",
+      "required": ["surfaceArea", "volume", "watertight", "boundaryEdgeCount", "dimensions", "primitive", "primitiveConfidence"],
+      "additionalProperties": false,
+      "properties": {
+        "surfaceArea": { "type": "number", "minimum": 0 },
+        "volume": { "type": "number" },
+        "watertight": { "type": "boolean" },
+        "boundaryEdgeCount": { "type": "integer", "minimum": 0 },
+        "dimensions": { "$ref": "#/$defs/vec3" },
+        "primitive": { "enum": ["box", "cylinder", "sphere", "planar", "freeform"] },
+        "primitiveConfidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}
