@@ -50,7 +50,7 @@
 ### 方式 A —— 从 GitHub 安装（推荐）
 
 ```sh
-dsh plugin --profile web add github:lishLRF/3DModelReadAndExplain
+dsh plugin --profile web add github:lishLRF/dsh-3d-model-viewer
 ```
 
 pnpm ≥ 10 会拒绝执行 git 依赖的 `prepare` 构建脚本，直到你显式允许。第一次 `add` 会失败并
@@ -64,14 +64,14 @@ allowBuilds:
 为供应链安全建议锁定 commit（`prepare` 脚本会在你机器上执行）：
 
 ```sh
-dsh plugin --profile web add github:lishLRF/3DModelReadAndExplain#<sha>
+dsh plugin --profile web add github:lishLRF/dsh-3d-model-viewer#<sha>
 ```
 
 ### 方式 B —— 从本地目录或 tarball 安装
 
 ```sh
 # 本地目录（链接该文件夹；prepare 仍会构建 lib/）
-dsh plugin --profile web add ./3DModelReadAndExplain
+dsh plugin --profile web add ./dsh-3d-model-viewer
 
 # 或打包后安装（无需构建脚本）
 pnpm pack

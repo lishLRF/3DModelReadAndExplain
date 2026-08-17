@@ -84,10 +84,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lishLRF/3DModelReadAndExplain.git"
+    "url": "git+https://github.com/lishLRF/dsh-3d-model-viewer.git"
   },
-  "homepage": "https://github.com/lishLRF/3DModelReadAndExplain#readme",
+  "homepage": "https://github.com/lishLRF/dsh-3d-model-viewer#readme",
   "bugs": {
-    "url": "https://github.com/lishLRF/3DModelReadAndExplain/issues"
+    "url": "https://github.com/lishLRF/dsh-3d-model-viewer/issues"
   }
 }
