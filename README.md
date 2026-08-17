@@ -114,6 +114,18 @@ dsh plugin --profile web remove dsh-3d-model-viewer
 4. 点击 **发送到 AI** 把标准 JSON + 提示词追加到输入框；或 **立即发送**。**下载 JSON** /
    **复制 JSON** 可导出文档。
 
+### 内置示例模型
+
+`examples/` 下有三个可用来快速验证的模型：
+
+| 文件 | 格式 | 说明 |
+| --- | --- | --- |
+| `examples/gear.obj` | OBJ | 齿轮（带齿圆盘） |
+| `examples/torus.stl` | STL | 圆环（二进制） |
+| `examples/box.step` | STEP | 立方体 40×20×10（AP214 BREP） |
+
+在面板里点 **加载模型** 选中它们即可；`cube.obj` 是最小的冒烟测试样例。
+
 ## STEP (.stp/.step) 支持
 
 STEP 是 BREP 实体格式，离散成三角网格需要 CAD 内核。本插件在**浏览器端**使用

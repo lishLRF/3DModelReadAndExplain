@@ -41,7 +41,7 @@
 - `analysis` —— **让 LLM「可懂」的语义层**：把裸三角面提炼成大模型能直接推理的特征：
   - `partCount` / `totalSurfaceArea` / `totalVolume` / `watertight`（是否封闭实体）;
   - `parts[]`：每部件的 `surfaceArea`、`volume`、`boundaryEdgeCount`（边界边数，0 即封闭）、
-    `dimensions`（包围盒尺寸）、`primitive`（`box|cylinder|sphere|planar|freeform`，
+    `dimensions`（包围盒尺寸）、`primitive`（`box|cylinder|sphere|torus|planar|freeform`，
     由 `|体积|/包围盒体积` 比值启发式判断）、`primitiveConfidence`（0–1 置信度）；
   - `naturalDescription`：一句自然语言摘要，直接喂给 LLM 即可"读懂"模型。
 

@@ -109,7 +109,7 @@
         "watertight": { "type": "boolean" },
         "boundaryEdgeCount": { "type": "integer", "minimum": 0 },
         "dimensions": { "$ref": "#/$defs/vec3" },
-        "primitive": { "enum": ["box", "cylinder", "sphere", "planar", "freeform"] },
+        "primitive": { "enum": ["box", "cylinder", "sphere", "torus", "planar", "freeform"] },
         "primitiveConfidence": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     }

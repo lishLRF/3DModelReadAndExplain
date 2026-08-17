@@ -14,6 +14,7 @@ export interface ViewerSettings {
   color: string
   metalness: number
   roughness: number
+  opacity: number
   wireframe: boolean
   ambientIntensity: number
   keyIntensity: number
@@ -26,6 +27,7 @@ export const DEFAULT_SETTINGS: ViewerSettings = {
   color: '#9aa4b2',
   metalness: 0.1,
   roughness: 0.7,
+  opacity: 1,
   wireframe: false,
   ambientIntensity: 0.7,
   keyIntensity: 1.1,
@@ -268,6 +270,8 @@ export class SceneController {
     this.defaultMaterial.color.set(s.color)
     this.defaultMaterial.metalness = s.metalness
     this.defaultMaterial.roughness = s.roughness
+    this.defaultMaterial.opacity = s.opacity
+    this.defaultMaterial.transparent = s.opacity < 1
     this.defaultMaterial.wireframe = s.wireframe
 
     const applyTo = (material: THREE.Material): void => {
@@ -275,6 +279,8 @@ export class SceneController {
       if (std === this.defaultMaterial) return
       std.metalness = s.metalness
       std.roughness = s.roughness
+      std.opacity = s.opacity
+      std.transparent = s.opacity < 1
       std.wireframe = s.wireframe
     }
     if (this.built !== null) {

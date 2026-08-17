@@ -16,7 +16,7 @@
  *     (box ≈ 1.0, cylinder ≈ π/4 ≈ 0.785, sphere ≈ π/6 ≈ 0.524).
  */
 
-export type PrimitiveKind = 'box' | 'cylinder' | 'sphere' | 'planar' | 'freeform'
+export type PrimitiveKind = 'box' | 'cylinder' | 'sphere' | 'torus' | 'planar' | 'freeform'
 
 /** Minimal structural view of a model document that analysis needs. */
 export interface AnalyzeInput {
@@ -96,7 +96,7 @@ export function signedVolumeOf(vertices: ArrayLike<number>, indices: ArrayLike<n
   return volume / 6
 }
 
-export function boundaryEdgeCountOf(vertices: ArrayLike<number>, indices: ArrayLike<number>): number {
+function edgeCounts(vertices: ArrayLike<number>, indices: ArrayLike<number>): Map<string, number> {
   // Key edges by GEOMETRIC POSITION (quantized), not vertex index: OBJ files
   // with per-face normals split a shared corner into multiple vertex indices,
   // yet the two triangles still share the same geometric edge.
@@ -119,15 +119,32 @@ export function boundaryEdgeCountOf(vertices: ArrayLike<number>, indices: ArrayL
       counts.set(k, (counts.get(k) ?? 0) + 1)
     }
   }
+  return counts
+}
+
+export function boundaryEdgeCountOf(vertices: ArrayLike<number>, indices: ArrayLike<number>): number {
   let boundary = 0
-  for (const count of counts.values()) if (count === 1) boundary += 1
+  for (const count of edgeCounts(vertices, indices).values()) if (count === 1) boundary += 1
   return boundary
+}
+
+/**
+ * Topological genus of a CLOSED mesh (0 = sphere-like, 1 = torus, …), from the
+ * Euler characteristic χ = V − E + F. Only meaningful when watertight.
+ */
+export function genusOf(vertices: ArrayLike<number>, indices: ArrayLike<number>): number {
+  const V = Math.floor(vertices.length / 3)
+  const F = Math.floor(indices.length / 3)
+  const E = edgeCounts(vertices, indices).size
+  const chi = V - E + F
+  return Math.max(0, Math.round((2 - chi) / 2))
 }
 
 function classifyPrimitive(
   watertight: boolean,
   volume: number,
   dimensions: [number, number, number],
+  genus: number,
 ): { primitive: PrimitiveKind; confidence: number } {
   const [dx, dy, dz] = dimensions
   const maxDim = Math.max(dx, dy, dz)
@@ -136,6 +153,8 @@ function classifyPrimitive(
     return { primitive: 'planar', confidence: 0.9 }
   }
   if (!watertight) return { primitive: 'freeform', confidence: 0.3 }
+  if (genus === 1) return { primitive: 'torus', confidence: 0.85 }
+  if (genus > 1) return { primitive: 'freeform', confidence: 0.5 }
 
   const bboxVolume = dx * dy * dz
   if (bboxVolume <= 0) return { primitive: 'freeform', confidence: 0.3 }
@@ -172,8 +191,9 @@ export function analyzePart(vertices: ArrayLike<number>, indices: ArrayLike<numb
   const volume = signedVolumeOf(vertices, indices)
   const boundaryEdgeCount = boundaryEdgeCountOf(vertices, indices)
   const watertight = triangleCount > 0 && boundaryEdgeCount === 0
+  const genus = watertight ? genusOf(vertices, indices) : 0
   const dimensions = dimensionsOf(vertices)
-  const { primitive, confidence } = classifyPrimitive(watertight, volume, dimensions)
+  const { primitive, confidence } = classifyPrimitive(watertight, volume, dimensions, genus)
   return {
     surfaceArea: round(surfaceArea),
     volume: round(volume),

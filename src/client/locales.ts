@@ -16,6 +16,7 @@ export interface ViewerKey {
   'color': string
   'metalness': string
   'roughness': string
+  'opacity': string
   'wireframe': string
   'lighting': string
   'ambient': string
@@ -47,6 +48,7 @@ export const en: Record<keyof ViewerKey, string> = {
   color: 'Color',
   metalness: 'Metalness',
   roughness: 'Roughness',
+  opacity: 'Opacity',
   wireframe: 'Wireframe',
   lighting: 'Lighting',
   ambient: 'Ambient',
@@ -78,6 +80,7 @@ export const zh: Record<keyof ViewerKey, string> = {
   color: '颜色',
   metalness: '金属度',
   roughness: '粗糙度',
+  opacity: '透明度',
   wireframe: '线框',
   lighting: '光照',
   ambient: '环境光',

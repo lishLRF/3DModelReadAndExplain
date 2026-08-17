@@ -9,6 +9,7 @@ import {
 } from '../src/analyze'
 import { buildDocument } from '../src/schema'
 import { parseObj } from '../src/parse/obj'
+import { translateStl } from '../src/parse/index'
 
 /** Outward-oriented closed tetrahedron: 4 vertices, 4 faces, volume 1/6. */
 const TETRA = {
@@ -97,6 +98,13 @@ describe('analyzePart', () => {
     expect(a.watertight).toBe(true)
     expect(a.primitive).toBe('box')
     expect(Math.abs(a.volume)).toBeCloseTo(1, 5)
+  })
+
+  it('classifies a torus (genus 1) via the Euler characteristic', () => {
+    const stl = new Uint8Array(readFileSync('examples/torus.stl'))
+    const doc = translateStl(stl, { name: 'torus.stl', units: 'mm' })
+    expect(doc.analysis.watertight).toBe(true)
+    expect(doc.analysis.parts[0].primitive).toBe('torus')
   })
 })
 

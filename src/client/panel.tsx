@@ -159,9 +159,9 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
         </div>
       </header>
 
-      {!minimized && (
-        <div className={css.content}>
-          <div className={`${css.canvas} ${dragging ? css.dragging : ''}`} ref={canvasRef}>
+      {/* 始终挂载 content（不随最小化卸载），否则收起再展开时 three.js 画布会变成空白 */}
+      <div className={`${css.content} ${minimized ? css.collapsed : ''}`}>
+        <div className={`${css.canvas} ${dragging ? css.dragging : ''}`} ref={canvasRef}>
             {doc === null && (
               <div className={css.empty}>
                 <div className={css.emptyTitle}>{t('empty')}</div>
@@ -225,6 +225,17 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
                       step={0.01}
                       value={settings.roughness}
                       onChange={(e) => patch({ roughness: Number(e.target.value) })}
+                    />
+                  </label>
+                  <label className={css.row}>
+                    <span>{t('opacity')}</span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={settings.opacity}
+                      onChange={(e) => patch({ opacity: Number(e.target.value) })}
                     />
                   </label>
                   <label className={css.check}>
@@ -343,8 +354,7 @@ export function ViewerPanel({ t, appendToDraft, sendNow, hasSession }: PanelProp
           )}
 
           {status !== null && <div className={css.status} role="status">{status}</div>}
-        </div>
-      )}
+      </div>
     </section>
   )
 }

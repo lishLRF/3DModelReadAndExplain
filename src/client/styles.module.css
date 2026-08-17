@@ -61,7 +61,13 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+}
+
+.content.collapsed {
+  display: none;
 }
 
 .canvas {
