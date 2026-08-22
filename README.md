@@ -208,7 +208,7 @@ src/
 
 ## 许可证
 
-MIT —— 见 [`LICENSE`](./LICENSE)，其中含第三方声明。
+MIT —— 见 [`LICENSE`](./LICENSE)，第三方声明见 [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)。
 
 ## 已知限制与路线图
 
