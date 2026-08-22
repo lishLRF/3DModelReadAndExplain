@@ -1,6 +1,6 @@
 {
   "name": "dsh-3d-model-viewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DSH plugin: view OBJ/STL/STEP models in the web UI and translate them into a standardized, LLM-readable JSON",
   "keywords": [
     "dsh",
